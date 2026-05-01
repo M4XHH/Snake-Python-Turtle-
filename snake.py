@@ -38,34 +38,34 @@ class Head(Turtle):
 
   def up(self):
     if self.direction != "down":
-      self.speed(2)
+      self.speed(0)
       self.setheading(90)
       self.direction = "up"
-      self.speed(2)
+      self.speed(0)
 
   def down(self):
     if self.direction != "up":
-      self.speed(2)
+      self.speed(0)
       self.setheading(-90)  
       self.direction = "down"
-      self.speed(2)
+      self.speed(0)
 
   def left(self):
     if self.direction != "right":
-      self.speed(2)
+      self.speed(0)
       self.setheading(180)
       self.direction = "left"
-      self.speed(2)
+      self.speed(0)
 
   def right(self):
     if self.direction != "left":
-      self.speed(2)
+      self.speed(0)
       self.setheading(0)
       self.direction = "right"
-      self.speed(2)
+      self.speed(0)
 
   def move(self):
-    self.forward(5)
+    self.forward(20)
     if self.xcor() < -240:
       self.die()
     elif self.xcor() > 240:
@@ -74,6 +74,7 @@ class Head(Turtle):
       self.die()
     elif self.ycor() < -240:
       self.die() 
+
     
   def die(self):
     self.alive = False
@@ -83,11 +84,14 @@ class Head(Turtle):
 class Segment(Turtle):
   def __init__(self, other):
     super().__init__()
-    pass
-
-  def move(self, other):
-    pass
-
+    self.ht()
+    self.speed(0)
+    self.shape("square")
+    self.color(generate_color())
+    self.pu()
+    self.st()
+  def move (self,seg):
+    self.goto(seg.pos())
 class Apple(Turtle):
   def __init__(self):
     super().__init__()
@@ -103,21 +107,30 @@ class Apple(Turtle):
     self.goto(random.randint(-230,230),random.randint(-230,230))
     self.st()
 
+def update():
+  if head.alive == True:
+    head.move()
+
+    for i in range(len(body)-1,0,-1):
+        body[i].move(body[i-1])
+
+    if head.distance(apple) < 20:
+      apple.relocate()
+      new = Segment(body[-1])
+      body.append(new)
+  screen.ontimer(update, 100)
+
 screen = Screen()
 screen.bgcolor("black")
 screen.setup(520,520)
 playing_area()
-# Key Binding. Connects key presses and mouse clicks with function calls
 screen.listen()
 
-body = []
 head = Head(screen)
+body = [head]
 apple = Apple()
-while head.alive == True:
-  head.move()
-  if head.distance(apple) < 20:
-    apple.relocate()
 
+update()
 
 
 screen.exitonclick()
