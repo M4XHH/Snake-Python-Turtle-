@@ -79,7 +79,9 @@ class Head(Turtle):
   def die(self):
     self.alive = False
     self.ht()
-
+def die(self):
+    self.alive = False
+    self.ht()
 
 class Segment(Turtle):
   def __init__(self, other):
@@ -108,12 +110,18 @@ class Apple(Turtle):
     self.st()
 
 def update():
+  global body
   if head.alive == True:
     head.move()
 
     for i in range(len(body)-1,0,-1):
-        body[i].move(body[i-1])
-
+      body[i].move(body[i-1])
+    for i in range(4,len(body)):
+      if body[i].distance(head) < 20:
+        for j in range(len(body)):
+          body[j].ht()
+          head.alive = False
+          body = []
     if head.distance(apple) < 20:
       apple.relocate()
       new = Segment(body[-1])
